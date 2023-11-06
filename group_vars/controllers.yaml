@@ -2,5 +2,8 @@ apt_packages:
 - ceph-common
 snap_packages:
 - microk8s
-microk8s_addons: {}
-
+- kubectl
+external_hostnames: {}
+external_ips:
+- 127.0.0.1
+- 10.129.31.6
