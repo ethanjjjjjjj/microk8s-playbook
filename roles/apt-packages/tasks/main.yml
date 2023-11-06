@@ -1,5 +1,9 @@
 ---
 # tasks file for roles/apt-packages
+- name: upgrade packages
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: yes
 - name: install snap packges
   ansible.builtin.apt:
     name: "{{apt_packages}}"

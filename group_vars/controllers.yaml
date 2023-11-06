@@ -1,2 +1,6 @@
 apt_packages:
 - ceph-common
+snap_packages:
+- microk8s
+microk8s_addons: {}
+

@@ -1,13 +1,7 @@
 - hosts: controllers
   become: true
+  user: ubuntu
   roles:
   - apt-packages
   - snap-packages
-- hosts: k8s_controllers
-  become: true
-  roles:
   - microk8s-controllers
-#- hosts: minis
-#  become: true
-#  roles:
-  #- microk8s-workers
