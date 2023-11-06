@@ -1,0 +1,6 @@
+---
+# tasks file for roles/apt-packages
+- name: install snap packges
+  ansible.builtin.apt:
+    name: "{{apt_packages}}"
+    state: present

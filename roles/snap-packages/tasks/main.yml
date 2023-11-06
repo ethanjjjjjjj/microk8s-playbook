@@ -1,0 +1,8 @@
+---
+# tasks file for roles/snap-packages
+- name: install snap packges
+  community.general.snap:
+    channel: stable
+    classic: true
+    name: microk8s
+    state: present

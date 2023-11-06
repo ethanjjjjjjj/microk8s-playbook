@@ -1,0 +1,7 @@
+---
+# vars file for roles/microk8s-controllers
+community: true
+microk8s_addons:
+- dns
+- "metallb:10.35.0.2-10.35.128.254"
+- metrics-server

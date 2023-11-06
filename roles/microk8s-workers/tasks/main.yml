@@ -1,0 +1,7 @@
+---
+# tasks file for roles/microk8s-workers
+- name: Join node into cluster
+  command: "{{join_code.stdout| regex_search('(microk8s join \\S+)\\n\\n','\\1') | first}} --worker"
+  register: join_output
+  changed_when: "'is already known' not in join_output.stdout"
+  failed_when: "'is already known' not in join_output.stdout"

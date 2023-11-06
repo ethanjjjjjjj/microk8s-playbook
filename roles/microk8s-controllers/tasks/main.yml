@@ -1,0 +1,43 @@
+---
+# tasks file for roles/microk8s-controllers
+- name: install snap packges
+  community.general.snap:
+    channel: stable
+    classic: true
+    name: microk8s
+    state: present
+- name: get join code
+  command: microk8s add-node -l 600
+  register: join_code
+  changed_when: false
+  run_once: true
+  #when: inventory_hostname in microk8s_controllers
+
+- name: Join node into cluster as controller
+  #when: (inventory_hostname in groups['k8s_controllers'])
+  command: "{{join_code.stdout| regex_search('(microk8s join \\S+)\\n\\n','\\1') | first}}"
+  register: join_output
+  changed_when: " not (('is already known' in join_output.stdout) or ('The joining node has the same IP' in join_output.stdout))"
+  failed_when: "not (('is already known' in join_output.stdout) or ('The node has joined the cluster' in join_output.stdout) or ('The joining node has the same IP' in join_output.stdout) or ("Waiting for this node to finish joining the cluster" in join_output.stdout))"
+
+#- name: Join node into cluster as worker
+#  when: inventory_hostname in groups['k8s_workers']
+#  command: "{{join_code.stdout| regex_search('(microk8s join \\S+)\\n\\n','\\1') | first}} --worker"
+#  register: join_output
+#  changed_when: "('is already known' not in join_output.stdout) and ('The node has joined the cluster' not in join_output.stdout)"
+#  failed_when: "not (('is already known' in join_output.stdout) or ('The node has joined the cluster' in join_output.stdout))"
+
+- name: enable community addons
+  #when: community and (inventory_hostname in {{microk8s_controllers}})
+  command: "microk8s enable community"
+  run_once: true
+  register: addon_output
+  changed_when: "'is already enabled' not in addon_output.stdout"
+- name: enable addons
+  #when: inventory_hostname in microk8s_controllers
+  run_once: true
+  command: "microk8s enable {{item}}"
+  loop: "{{microk8s_addons}}"
+  register: addon_output
+  changed_when: "'is already enabled' not in addon_output.stdout"
+
